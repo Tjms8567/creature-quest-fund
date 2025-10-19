@@ -1,6 +1,26 @@
+import { useState, useEffect } from "react";
 import { Book } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SynopsisSection = () => {
+  const [synopsisImage, setSynopsisImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadSynopsisImage();
+  }, []);
+
+  const loadSynopsisImage = async () => {
+    const { data } = await supabase
+      .from("media")
+      .select("url")
+      .eq("type", "synopsis_image")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (data) setSynopsisImage(data.url);
+  };
+
   return (
     <section className="py-20 bg-card">
       <div className="container mx-auto px-4">
@@ -18,9 +38,13 @@ export const SynopsisSection = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-up">
               <div className="aspect-video bg-gradient-hero rounded-xl shadow-elegant overflow-hidden border border-border">
-                <div className="w-full h-full flex items-center justify-center">
-                  <Book className="h-20 w-20 text-muted-foreground" />
-                </div>
+                {synopsisImage ? (
+                  <img src={synopsisImage} alt="Synopsis" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Book className="h-20 w-20 text-muted-foreground" />
+                  </div>
+                )}
               </div>
             </div>
 

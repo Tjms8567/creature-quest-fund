@@ -1,7 +1,27 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const HeroSection = () => {
+  const [heroVideo, setHeroVideo] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadHeroVideo();
+  }, []);
+
+  const loadHeroVideo = async () => {
+    const { data } = await supabase
+      .from("media")
+      .select("url")
+      .eq("type", "hero_video")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (data) setHeroVideo(data.url);
+  };
+
   const scrollToAbout = () => {
     const element = document.getElementById("about");
     element?.scrollIntoView({ behavior: "smooth" });
@@ -9,12 +29,24 @@ export const HeroSection = () => {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background Placeholder */}
-      <div className="absolute inset-0 bg-gradient-hero">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnptMCAzYy0xLjY1NyAwLTMgMS4zNDMtMyAzczEuMzQzIDMgMyAzIDMtMS4zNDMgMy0zLTEuMzQzLTMtMy0zeiIgZmlsbD0iIzNiODJmNiIgb3BhY2l0eT0iLjMiLz48L2c+PC9zdmc+')] animate-pulse"></div>
+      {/* Video Background or Gradient */}
+      {heroVideo ? (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+      ) : (
+        <div className="absolute inset-0 bg-gradient-hero">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnptMCAzYy0xLjY1NyAwLTMgMS4zNDMtMyAzczEuMzQzIDMgMyAzIDMtMS4zNDMgMy0zLTEuMzQzLTMtMy0zeiIgZmlsbD0iIzNiODJmNiIgb3BhY2l0eT0iLjMiLz48L2c+PC9zdmc+')] animate-pulse"></div>
+          </div>
         </div>
-      </div>
+      )}
       
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-overlay"></div>

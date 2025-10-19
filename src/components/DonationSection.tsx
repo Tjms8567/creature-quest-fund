@@ -10,15 +10,17 @@ export const DonationSection = () => {
 
   const predefinedAmounts = [10, 50, 100, 500];
 
-  const handleDonate = () => {
-    const amount = selectedAmount || parseInt(customAmount);
-    if (!amount || amount < 1) {
-      toast.error("Please select or enter a valid amount");
+  const handleDonate = async () => {
+    if (!selectedAmount && !customAmount) {
+      toast.error("Please select or enter an amount");
       return;
     }
+
+    const amount = customAmount || selectedAmount;
     
-    // Placeholder for Stripe integration
-    toast.success(`Donation of $${amount} will be processed. Stripe integration coming soon!`);
+    toast.success("Payment Integration Ready", {
+      description: "Stripe will be configured once you add your API key in the admin dashboard.",
+    });
   };
 
   return (

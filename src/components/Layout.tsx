@@ -40,6 +40,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               <button onClick={() => scrollToSection("donate")} className="text-foreground hover:text-primary transition-colors">
                 Support Us
               </button>
+              <Button variant="ghost" size="sm" onClick={() => window.location.href = "/auth"}>
+                Admin
+              </Button>
             </nav>
 
             {/* Mobile Menu Button */}
